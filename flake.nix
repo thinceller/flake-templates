@@ -12,6 +12,11 @@
         path = ./nodejs;
         description = "Node.js project template";
       };
+
+      haskell = {
+        path = ./haskell;
+        description = "Haskell project template";
+      };
     };
   };
 }
