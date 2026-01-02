@@ -21,3 +21,9 @@ nix flake init -t github:thinceller/flake-templates#nodejs
 ```sh
 nix flake init -t github:thinceller/flake-templates#haskell
 ```
+
+### Bun
+
+```sh
+nix flake init -t github:thinceller/flake-templates#bun
+```
