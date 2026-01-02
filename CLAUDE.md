@@ -4,40 +4,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a Nix flake templates repository that provides reusable templates for new projects. Currently contains:
-- `minimal`: Basic flake with treefmt-nix for code formatting
-- `nodejs`: Extends minimal template with Node.js development environment
-- `haskell`: Extends minimal template with Haskell development environment (GHC, Cabal, HLS)
+Nix flake templates repository providing reusable project templates. Available templates:
+- `minimal`: Basic flake with treefmt-nix (nixfmt)
+- `nodejs`: Minimal + Node.js development environment
+- `haskell`: Minimal + Haskell environment (GHC, Cabal, HLS, ormolu)
 
 ## Common Commands
 
-### Repository Development
 - `nix flake check` - Validate all flake outputs and templates
 - `nix flake show` - Display available templates
 
-### Using Templates
-```sh
-# Initialize with minimal template
-nix flake init -t github:thinceller/flake-templates#minimal
-
-# Initialize with Node.js template
-nix flake init -t github:thinceller/flake-templates#nodejs
-
-# Initialize with Haskell template
-nix flake init -t github:thinceller/flake-templates#haskell
-```
-
-### In Template Projects
-- `nix develop` - Enter development shell
-- `treefmt` - Format code using configured formatters
-
 ## Architecture
 
-Templates use:
-- **flake-parts**: Modular flake framework for cleaner organization
-- **treefmt-nix**: Universal code formatter integration
-  - nixfmt enabled by default in all templates
-  - ormolu enabled in Haskell template for Haskell code formatting
-- Development shells include treefmt tooling via `inputsFrom`
+**Root flake.nix**: Template registry that declares available templates by pointing to subdirectories.
 
-Template structure follows standard Nix flake patterns with `inputs` and `outputs`, using flake-parts' `mkFlake` helper for system-specific configurations.
+**Template flake.nix files** (`<template>/flake.nix`): Standalone flakes using flake-parts with:
+- `inputs`: nixpkgs, flake-parts, treefmt-nix (with follows)
+- `systems`: aarch64-darwin, x86_64-linux
+- `treefmt`: Code formatting config (nixfmt always, plus language-specific formatters)
+- `devShells.default`: Development shell with `inputsFrom = [config.treefmt.build.devShell]`
+
+## Adding a New Template
+
+1. Create `<template-name>/flake.nix` following the existing pattern
+2. Register in root `flake.nix` under `outputs.templates`
+3. Run `nix flake check` to validate
+
+## Documentation
+
+コードを変更する際は、関連するドキュメントの更新を必ず行ってください：
+
+- **README.md**: ユーザー向けの説明、使用方法、テンプレート一覧の更新
+- **CLAUDE.md**: アーキテクチャ、コマンド、開発ガイドラインの更新
+
+特に以下の変更時は注意：
+- 新しいテンプレートの追加 → README.mdのテンプレート一覧を更新
+- コマンドやワークフローの変更 → CLAUDE.mdのCommon Commandsを更新
+- アーキテクチャの変更 → CLAUDE.mdのArchitectureを更新
